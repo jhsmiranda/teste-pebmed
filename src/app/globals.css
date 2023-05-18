@@ -18,10 +18,29 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(var(--background-end-rgb));
+}
+
+select {
+  @apply pb-[10px] border-b-[1px] border-peb-gray-1 focus:outline-none w-full h-[30px];
+}
+
+/* option[value=""][disabled] {
+  display: none;
+}
+
+select {
+  color: red;
+} */
+
+input {
+  @apply pb-[10px] border-b-[1px] border-peb-gray-1 focus:outline-none w-full h-[30px];
+}
+
+input::placeholder {
+  @apply text-lg tracking-[-0.02em] text-peb-gray-3;
+}
+
+label {
+  @apply text-sm text-peb-gray-4;
 }
