@@ -25,14 +25,6 @@ select {
   @apply pb-[10px] border-b-[1px] border-peb-gray-1 focus:outline-none w-full h-[30px];
 }
 
-/* option[value=""][disabled] {
-  display: none;
-}
-
-select {
-  color: red;
-} */
-
 input {
   @apply pb-[10px] border-b-[1px] border-peb-gray-1 focus:outline-none w-full h-[30px];
 }

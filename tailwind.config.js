@@ -29,6 +29,7 @@ module.exports = {
       colors: {
         "peb-primary": "#191847",
         "peb-secondary": "#F5850B",
+        "peb-red": "#d72b2b",
         "peb-black": "#151516",
         "peb-gray-1": "#F4F3F6",
         "peb-gray-2": "#E1DEE8",
