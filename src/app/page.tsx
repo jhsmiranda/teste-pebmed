@@ -222,6 +222,7 @@ export default function Home() {
               placeholder="Seu nome"
               register={register}
               errors={errors.cardHolderName?.message}
+              mask
             />
             <Input
               name="cpf"

@@ -22,8 +22,8 @@ export const formatExpirationDate = (expirationDate: string) => {
   return formattedNumber;
 };
 
-export const formatCPF = (expirationDate: string) => {
-  var cleanNumber = expirationDate.replace(/\D/g, "");
+export const formatCPF = (cpf: string) => {
+  var cleanNumber = cpf.replace(/\D/g, "");
   var formattedNumber = "";
   for (var i = 0; i < cleanNumber.length; i++) {
     if (i === 3 || i === 6) {
@@ -34,4 +34,8 @@ export const formatCPF = (expirationDate: string) => {
     formattedNumber += cleanNumber.charAt(i);
   }
   return formattedNumber;
+};
+
+export const formatName = (name: string) => {
+  return name.replace(/[^a-zA-Z\s]/g, "");
 };

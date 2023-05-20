@@ -2,6 +2,7 @@ import {
   formatCardNumber,
   formatCPF,
   formatExpirationDate,
+  formatName,
 } from "~/utils/masks";
 
 interface Props {
@@ -33,6 +34,9 @@ export default function Input({
         break;
       case "cpf":
         input.value = formatCPF(input.value);
+        break;
+      case "cardHolderName":
+        input.value = formatName(input.value);
         break;
       default:
         break;
