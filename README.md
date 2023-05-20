@@ -17,7 +17,7 @@ Primeiro, instale as dependência do projeto:
 
 ```bash
 npn install
-#ou
+# ou
 yarn install
 ```
 
@@ -25,7 +25,7 @@ Segundo, executar o servidor de desenvolvimento:
 
 ```bash
 npm run dev
-# or
+# ou
 yarn dev
 ```
 
