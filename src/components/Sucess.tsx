@@ -27,7 +27,7 @@ export default function Success({ installmentSelected, offers, cpf }: Props) {
   }, [installmentSelected, offers]);
 
   return (
-    <div className={`flex-col items-center mt-10`}>
+    <div className={`flex flex-col items-center mt-10`}>
       <Image src={SuccessIcon} alt="Icon success" className="mb-[18.2px]" />
       <span className="text-peb-primary text-xl mb-[11px]">Parabéns!</span>
       <span className="text-peb-gray-3 text-lg mb-[56.8px] max-w-[200px] text-center">

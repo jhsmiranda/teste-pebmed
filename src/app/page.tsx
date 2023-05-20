@@ -1,7 +1,8 @@
 "use client";
 
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useCallback, useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Image from "next/image";
 import * as yup from "yup";
@@ -21,6 +22,8 @@ import Help from "../../public/assets/help.svg";
 import Visa from "../../public/assets/visa.svg";
 import Elo from "../../public/assets/elo.svg";
 
+import "react-toastify/dist/ReactToastify.css";
+
 interface FormData {
   cardNumber: string;
   expirationDate: string;
@@ -32,6 +35,8 @@ interface FormData {
 }
 
 export default function Home() {
+  const installmentRef = useRef<string>();
+
   const [offers, setOffers] = useState<OfferProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [installmentSelected, setInstallmentSelected] = useState<string>("");
@@ -54,8 +59,8 @@ export default function Home() {
       setLoading(true);
       const { data } = await Http().get("/offer");
       setOffers(data);
-    } catch (e) {
-      console.error(e);
+    } catch (err: any) {
+      toast.error(err?.error || "Aconteuceu um erro! Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -64,6 +69,10 @@ export default function Home() {
   useEffect(() => {
     getOffers();
   }, [getOffers]);
+
+  useEffect(() => {
+    installmentRef.current = installmentSelected;
+  }, [installmentSelected]);
 
   const schema = yup.object().shape({
     cardNumber: yup
@@ -90,13 +99,12 @@ export default function Home() {
     installments: yup
       .string()
       .required("Campo obrigatório")
-      .test("teste-parcelas", "Campo obrigatório", (installment) => {
-        if (installment === "Selecionar") {
+      .test("teste-parcelas", "Campo obrigatório", () => {
+        if (installmentRef.current === "") {
           return false;
         }
         return true;
       }),
-    // .notOneOf(["Selecionar"], "Campo obrigatório"),
   });
 
   const {
@@ -116,9 +124,9 @@ export default function Home() {
       creditCardHolder: data.cardHolderName,
       creditCardNumber: data.cardNumber.replace(/[^\d]+/g, ""),
       gateway: "iugu",
-      installments: parseInt(data.installments, 10),
+      installments: parseInt(installmentSelected, 10),
       offerId: offers.filter(
-        (offer) => offer.installments === parseInt(data.installments, 10)
+        (offer) => offer.installments === parseInt(installmentSelected, 10)
       )[0].id,
       userId: 1,
     };
@@ -126,21 +134,32 @@ export default function Home() {
     try {
       setLoading(true);
       await Http().post("/subscription", params);
-      setSuccess(true);
       setCpf(data.cpf);
-    } catch (e) {
-      console.error(e);
+      setSuccess(true);
+    } catch (err: any) {
+      toast.error(
+        err?.error ||
+          "Aconteuceu um erro! Verifique os dados e tente novamente."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    console.log("installmentSelected", installmentSelected);
-  }, [installmentSelected]);
-
   return (
     <div className="Container w-full flexjustify-center px-[30px] lg:px-[68px] flex justify-center">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div
         className={`${
           loading || success ? "hidden" : "flex"
