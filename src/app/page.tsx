@@ -10,6 +10,7 @@ import { validateCPF, ValidateSuperiorDateLastMonth } from "~/utils/validates";
 import { formatCurrency } from "~/utils/fomatCurrency";
 import CardOffer from "~/components/CardOffer";
 import { Http } from "~/services/axiosClient";
+import Success from "~/components/Sucess";
 import Input from "~/components/Input";
 
 import AmericanExpress from "../../public/assets/americanexpress.svg";
@@ -33,6 +34,9 @@ interface FormData {
 export default function Home() {
   const [offers, setOffers] = useState<OfferProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [installmentSelected, setInstallmentSelected] = useState<string>("");
+  const [success, setSuccess] = useState<boolean>(false);
+  const [cpf, setCpf] = useState<string>("");
   const cards = [Mastercard, DinnersClub, AmericanExpress, Visa, Elo];
 
   const installments = offers.map((offer) => {
@@ -86,13 +90,18 @@ export default function Home() {
     installments: yup
       .string()
       .required("Campo obrigatório")
-      .notOneOf(["Selecionar"], "Campo obrigatório"),
+      .test("teste-parcelas", "Campo obrigatório", (installment) => {
+        if (installment === "Selecionar") {
+          return false;
+        }
+        return true;
+      }),
+    // .notOneOf(["Selecionar"], "Campo obrigatório"),
   });
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -116,8 +125,9 @@ export default function Home() {
 
     try {
       setLoading(true);
-      const res = await Http().post("/subscription", params);
-      console.log("ressssss", res);
+      await Http().post("/subscription", params);
+      setSuccess(true);
+      setCpf(data.cpf);
     } catch (e) {
       console.error(e);
     } finally {
@@ -125,13 +135,15 @@ export default function Home() {
     }
   };
 
-  console.log(watch("cardNumber"));
+  useEffect(() => {
+    console.log("installmentSelected", installmentSelected);
+  }, [installmentSelected]);
 
   return (
     <div className="Container w-full flexjustify-center px-[30px] lg:px-[68px] flex justify-center">
       <div
         className={`${
-          loading ? "hidden" : "flex"
+          loading || success ? "hidden" : "flex"
         } Wrapper max-w-[1140px] w-full lg:px-[100px] py-10 flex-col-reverse gap-[30px] lg:flex-row lg:justify-between`}
       >
         <div className="Form flex flex-col gap-[30px] max-w-full lg:max-w-[330px]">
@@ -224,6 +236,8 @@ export default function Home() {
                   errors.installments &&
                   "border-b-peb-red placeholder:text-peb-red text-peb-red"
                 }`}
+                onInput={(e: any) => setInstallmentSelected(e.target.value)}
+                value={installmentSelected}
               >
                 <option hidden defaultValue="">
                   Selecionar
@@ -264,7 +278,14 @@ export default function Home() {
           </div>
           <div className="Cards flex flex-col gap-4">
             {offers.map((offer: any) => {
-              return <CardOffer key={offer.id} offer={offer}></CardOffer>;
+              return (
+                <CardOffer
+                  key={offer.id}
+                  offer={offer}
+                  installmentSelected={installmentSelected}
+                  setInstallmentSelected={setInstallmentSelected}
+                ></CardOffer>
+              );
             })}
           </div>
           <div className="w-full flex justify-center gap-3 cursor-pointer">
@@ -273,6 +294,13 @@ export default function Home() {
           </div>
         </div>
       </div>
+      {success && (
+        <Success
+          installmentSelected={installmentSelected}
+          offers={offers}
+          cpf={cpf}
+        />
+      )}
     </div>
   );
 }

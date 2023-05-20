@@ -3,23 +3,28 @@ import { formatCurrency } from "~/utils/fomatCurrency";
 interface Props {
   offer: OfferProps;
   key?: number;
-  selectedPlan?: string;
+  installmentSelected?: string;
+  setInstallmentSelected?: any;
 }
 
-export default function CardOffer({ offer, selectedPlan }: Props) {
+export default function CardOffer({
+  offer,
+  installmentSelected,
+  setInstallmentSelected,
+}: Props) {
   return (
     <div>
       <input
         type="radio"
-        id={offer.storeId}
+        id={offer.installments.toString()}
         name="fav_language"
-        value={offer.storeId}
-        onChange={(e) => console.log(e.target.value)}
+        value={offer.installments}
+        onChange={(e) => setInstallmentSelected(e.target.value)}
         className="hidden"
       />
       <label
-        htmlFor={offer.storeId}
-        className="Card border-[1px] rounded-[15px] border-peb-primary p-5 flex w-full justify-between"
+        htmlFor={offer.installments.toString()}
+        className="Card border-[1px] rounded-[15px] border-peb-primary p-5 flex w-full justify-between cursor-pointer"
       >
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex flex-col gap-1">
@@ -45,14 +50,16 @@ export default function CardOffer({ offer, selectedPlan }: Props) {
         </div>
         <div
           className={`self-center w-4 h-4 rounded-full border-2 flex justify-center items-center ${
-            selectedPlan === offer.storeId
+            installmentSelected === offer.installments.toString()
               ? "border-peb-gray-3"
               : "border-peb-gray-1"
           }`}
         >
           <div
             className={`${
-              selectedPlan === offer.storeId ? "block" : "hidden"
+              installmentSelected === offer.installments.toString()
+                ? "block"
+                : "hidden"
             } w-2 h-2 bg-peb-primary rounded-full`}
           ></div>
         </div>
